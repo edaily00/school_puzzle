@@ -6,6 +6,7 @@ def puzzle_helper(pos, nums_list, all_positions):
     """This method is the helper function that holds the positions and all visited positions"""
     length = len(nums_list)-1
     steps = nums_list[pos]
+    tru_pos = pos
 #The base case is true if position is the end of the list
     if pos == length:
         return True
@@ -16,12 +17,15 @@ def puzzle_helper(pos, nums_list, all_positions):
         pos += steps
         steps = nums_list[pos]
         if pos in all_positions:
-            return False
+            raise All_Positions_Error
         all_positions.append(pos)
         return puzzle_helper(pos, nums_list, all_positions)
     except IndexError:
         pos -= steps
         pass
+    except All_Positions_Error:
+        steps = nums_list[tru_pos]
+        pos -= steps
 #This try statement goes left in the list and makes sure the position is within the list and has not been visited before
     try:
         pos -= steps
@@ -29,12 +33,17 @@ def puzzle_helper(pos, nums_list, all_positions):
             raise IndexError
         steps = nums_list[pos]
         if pos in all_positions:
-            return False
+            raise All_Positions_Error
         all_positions.append(pos)
         return puzzle_helper(pos, nums_list, all_positions)
     except IndexError:
         pos += steps
         pass
+    except All_Positions_Error:
+        steps = nums_list[tru_pos]
+        pos += steps
+
+
 
     if pos in all_positions:
         return False
@@ -46,6 +55,13 @@ def row_puzzle(nums_list):
     pos = 0
     all_positions = []
     return puzzle_helper(pos, nums_list, all_positions)
+
+class All_Positions_Error(Exception):
+    pass
+
+
+list1 = [2, 4, 5, 3, 1, 3, 1, 4, 0]
+print(row_puzzle(list1))
 
 
 
